@@ -1,5 +1,5 @@
 {
-  "name": "grab-restaurant",
+  "name": "grab_restaurant",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,41 +10,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "daisyui": "^5.0.43",
+    "@tailwindcss/vite": "^4.1.10",
+    "grab_restaurant": "file:",
     "json-server": "^1.0.0-beta.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.6.2",
-    "sweetalert2": "^11.22.1",
-    "sweetalert2-react-content": "^5.1.0"
+    "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
-    "@tailwindcss/postcss": "^4.1.10",
-    "@tailwindcss/vite": "^4.1.10",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
-    "autoprefixer": "^10.4.21",
+    "daisyui": "^5.0.43",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.10",
     "vite": "^6.3.5"
-  },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Sranphat8/Grab-Restaurant.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Sranphat8/Grab-Restaurant/issues"
-  },
-  "homepage": "https://github.com/Sranphat8/Grab-Restaurant#readme"
+  }
 }
