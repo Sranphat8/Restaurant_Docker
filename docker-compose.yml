@@ -8,6 +8,8 @@ services:
     volumes:
       - "./server:/app"
       - "/app/node_modules"
+    command: nodemon --legacy-watch index.js
+    restart: always
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/app_db
       - HOST=db

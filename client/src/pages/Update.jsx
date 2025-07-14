@@ -1,107 +1,89 @@
+// นำเข้า React และ Hook ที่ใช้
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router"; // ใช้ดึงพารามิเตอร์ id จาก URL
 
 const Update = () => {
-  //1.Get Id from URL
+  // ดึง id จาก URL เช่น /update/3 => id = 3
   const { id } = useParams();
+
+  // เก็บข้อมูลร้านอาหารที่จะแก้ไขไว้ใน state
   const [restaurant, setRestaurant] = useState({
     title: "",
     type: "",
     img: "",
   });
 
-  //2. Get Restaurant by ID
+  // ดึงข้อมูลร้านอาหารจาก server เมื่อโหลด component นี้
   useEffect(() => {
-    fetch("http://localhost:5000/restaurants/" + id)
-      .then((res) => {
-        // convert to JSON format
-        return res.json();
-      })
+    fetch("http://localhost:3000/restaurants/" + id)
+      .then((res) => res.json())
       .then((response) => {
-        //save to state
-        setRestaurant(response);
+        setRestaurant(response); // เซตข้อมูลที่ได้เข้า state
       })
       .catch((err) => {
-        //catch error
-        console.log(err.message);
+        console.log(err.message); // แสดง error ถ้ามี
       });
   }, [id]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setRestaurant({ ...restaurant, [name]: value });
+  // เมื่อกดปุ่ม "บันทึก" ให้ส่งข้อมูลใหม่ไปที่ server
+  const handleSubmit = () => {
+    fetch("http://localhost:3000/restaurants/" + id, {
+      method: "PUT", // ใช้ PUT เพื่ออัปเดตข้อมูล
+      headers: {
+        "Content-Type": "application/json", // แจ้งว่าเราส่ง JSON
+      },
+      body: JSON.stringify(restaurant), // แปลงข้อมูลร้านอาหารเป็น JSON
+    })
+      .then(() => {
+        window.location.href = "/"; // กลับไปหน้าแรกหลังอัปเดตเสร็จ
+      })
+      .catch((err) => console.log(err.message));
   };
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/restaurants/" + id, {
-        method: "PUT",
-        body: JSON.stringify(restaurant),
-      });
-      if (response.ok) {
-        alert("Restaurant updated successfully!!");
-        setRestaurant({
-          title: "",
-          type: "",
-          img: "",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   return (
-    <div className="container mx-auto">
-      <div>
-        <h1 className="text-2xl text-center mt-2">Update restaurant</h1>
-      </div>
-      <div className="space-y-2 flex items-center flex-col my-2 w-full">
-        <label className="input input-bordered flex items-center gap-2 w-[500px]">
-          Restaurant Title:
-          <input
-            type="text"
-            name="title"
-            value={restaurant.title}
-            className="grow w-80"
-            placeholder="Restaurant Title"
-            onChange={handleChange}
-          />
-        </label>
-        <label className="input input-bordered flex items-center gap-2 w-[500px]">
-          Restaurant Type:
-          <input
-            type="text"
-            name="type"
-            value={restaurant.type}
-            onChange={handleChange}
-            className="grow  w-80"
-            placeholder="Restaurant Type"
-          />
-        </label>
-        <label className="input input-bordered flex items-center gap-2 w-[500px]">
-          Restaurant Img:
-          <input
-            type="text"
-            className="grow"
-            value={restaurant.img}
-            onChange={handleChange}
-            placeholder="Restaurant Img"
-            name="img"
-          />
-        </label>
-        {restaurant.img && (
-          <div className="flex items-center gap-2">
-            <img className="h-32" src={restaurant.img} />
-          </div>
-        )}
-        <div className="space-x-2">
-          <button
-            className="btn btn-outline btn-success"
-            onClick={handleSubmit}
-          >
-            Update
-          </button>
-          <button className="btn btn-outline btn-error">Cancel</button>
-        </div>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-6 py-16">
+      <div className="bg-white bg-opacity-70 backdrop-blur-md rounded-3xl shadow-md max-w-lg w-full p-10">
+        <h2 className="text-3xl font-light mb-8 text-gray-900 text-center tracking-wide select-none">
+          แก้ไขข้อมูลร้านอาหาร
+        </h2>
+
+        {/* ช่องกรอกชื่อร้านอาหาร */}
+        <label className="block mb-3 font-semibold text-gray-700">ชื่อร้าน (Title)</label>
+        <input
+          type="text"
+          value={restaurant.title}
+          onChange={(e) => setRestaurant({ ...restaurant, title: e.target.value })}
+          className="w-full mb-8 rounded-xl border border-gray-300 bg-white bg-opacity-90 px-5 py-3 text-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+          placeholder="กรอกชื่อร้านอาหาร"
+        />
+
+        {/* ช่องกรอกประเภทอาหาร */}
+        <label className="block mb-3 font-semibold text-gray-700">ประเภทอาหาร (Type)</label>
+        <input
+          type="text"
+          value={restaurant.type}
+          onChange={(e) => setRestaurant({ ...restaurant, type: e.target.value })}
+          className="w-full mb-8 rounded-xl border border-gray-300 bg-white bg-opacity-90 px-5 py-3 text-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+          placeholder="เช่น อาหารไทย, อาหารญี่ปุ่น"
+        />
+
+        {/* ช่องกรอก URL รูปภาพ */}
+        <label className="block mb-3 font-semibold text-gray-700">URL รูปภาพ (Image URL)</label>
+        <input
+          type="text"
+          value={restaurant.img}
+          onChange={(e) => setRestaurant({ ...restaurant, img: e.target.value })}
+          className="w-full mb-10 rounded-xl border border-gray-300 bg-white bg-opacity-90 px-5 py-3 text-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+          placeholder="กรอก URL รูปภาพ"
+        />
+
+        {/* ปุ่มบันทึก */}
+        <button
+          onClick={handleSubmit}
+          className="w-full rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 shadow-lg transition"
+        >
+          บันทึกการเปลี่ยนแปลง
+        </button>
       </div>
     </div>
   );
