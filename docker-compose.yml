@@ -11,15 +11,18 @@ services:
     command: nodemon --legacy-watch index.js
     restart: always
     environment:
+      # ตรวจสอบว่าชื่อ Environment Variables ตรงกับที่ db.config.js เรียกใช้
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/app_db
       - HOST=db
       - USER=postgres
       - PASSWORD=postgres
       - DB=app_db
-      - DB_PORT=5432
-      - SERVER_PORT=5000
+      - DBPORT=5432        
+      - DIALECT=postgres   
+      - PORT=5000          
     depends_on:
-      - db
+      db:
+        condition: service_healthy # <--- ให้ server รอจนกว่า db จะ healthy
   client:
     build:
       context: ./client
@@ -37,12 +40,18 @@ services:
     image: postgres:16
     restart: always
     ports:
-      - "5433:5432"
+      - "5432:5432" # Host:5432 -> Container:5432
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=app_db
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck: # <--- เพิ่ม healthcheck ให้ db
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s # ให้เวลา DB เริ่มต้นก่อนเริ่มเช็ค health
 volumes:
   pgdata:

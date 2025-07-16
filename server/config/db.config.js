@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
-module.exports = {
+
+const config = {
   HOST: process.env.HOST,
   USER: process.env.USER,
   PASSWORD: process.env.PASSWORD,
@@ -13,5 +14,6 @@ module.exports = {
     acquire: 30000,
     idle: 10000
   },
-
 };
+
+export default config;
